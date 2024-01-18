@@ -185,20 +185,22 @@ Use the context as a reference to create the quiz and the answers.
 The paragraphs in the context are separated by C<index>: <<context>>; format: C1: <context1>, C2: <context2>...
 Context: \"\"\"{await self.context(self.theme)}\"\"\"
 
-json format:
+JSON format:
 {{"question":"<question>","truth":"<truth>","alternatives":["a) <a>","b) <b>","c) <c>","d) <d>"]}}
 
-json example:
+JSON Example:
 {{"question":"<quiz>","truth":"<a|b|c|d>","alternatives":["a) <Alternative A>","b) <Alternative B>","c) <Alternative C>","d) <Alternative D>"]}}
 
-json schema:
+JSON Schema:
 question: the quiz question.
 truth: the letter of the correct alternative.
 alternatives: list of alternatives based on the correct format: a) <a>, b) <b>, c) <c>, d) <d>
 
 Topic language: Portuguese (Brazil).
 Context language: Portuguese (Brazil).
-Alternatives in language: Portuguese (Brazil).""")
+Alternatives in language: Portuguese (Brazil).
+
+Output in JSON.""")
         ]
 
         llm = self.llmChatOpenAI(temperature=0)
