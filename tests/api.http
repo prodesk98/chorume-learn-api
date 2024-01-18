@@ -1,0 +1,53 @@
+### upsert
+POST http://localhost:3001/api/upsert
+Content-Type: application/json
+Authorization: Bearer {{Authorization}}
+
+{
+  "content": "O C++ foi inicialmente desenvolvido por Bjarne Stroustrup dos Bell Labs, durante a década de 1980 com o objetivo implementar uma versão distribuída do núcleo Unix.[4] Como o Unix era escrito em C, deveria-se manter a compatibilidade, ainda que adicionando novos recursos. Alguns dos desafios incluíam simular a infraestrutura da comunicação entre processos num sistema distribuído ou de memória compartilhada e escrever drivers para tal sistema. Stroustrup percebeu que a linguagem Simula 67 possuía características bastante úteis para o desenvolvimento de software, mas que era muito lenta para uso prático. Por outro lado, a linguagem BCPL era rápida, mas possuía demasiado baixo nível, dificultando sua utilização no desenvolvimento de aplicações. A partir de sua experiência de doutorado, começou a acrescentar elementos do Simula 67 no C, especialmente os recursos de criação e manipulação de objetos. O C foi escolhido como base de desenvolvimento da nova linguagem pois possuía uma proposta de uso genérico, era rápido e também portável para diversas plataformas. Algumas outras linguagens que também serviram de inspiração para o cientista da computação foram ALGOL 68, Ada, CLU e ML.",
+  "username": "Proton"
+}
+
+### semantic search
+GET http://localhost:3001/api/semantic-search?q=quem+criou+o+python
+Content-Type: application/json
+Authorization: Bearer {{Authorization}}
+
+### asking
+POST http://localhost:3001/api/asking
+Content-Type: application/json
+Authorization: Bearer {{Authorization}}
+
+{
+  "q": "Quem criou o C++?",
+  "username": "Proton"
+}
+
+### text to speech
+POST http://localhost:3001/api/text-to-speech
+Content-Type: application/json
+Authorization: Bearer {{Authorization}}
+
+{
+  "content": "Alan Turing foi o pai da ciência da computação."
+}
+
+### million show
+POST http://localhost:3001/api/million-show
+Content-Type: application/json
+Authorization: Bearer {{Authorization}}
+
+{
+  "theme": "O criado do C++",
+  "amount": 100
+}
+
+### vectors
+POST http://localhost:3001/api/vectors
+Content-Type: application/json
+Authorization: Bearer {{Authorization}}
+
+{
+  "filter": {}
+}
+
