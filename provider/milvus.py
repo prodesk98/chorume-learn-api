@@ -95,7 +95,7 @@ class MilvusDataStore:
             model=env.OPENAI_EMBEDDING_MODEL,
             openai_api_key=env.OPENAI_API_KEY
         )
-        self.factory = VectorFactory()
+        self.vectorFactory = VectorFactory()
         self.documents: List[Vector] = []
 
     def _tokenizer(self, text: str) -> int:
@@ -151,7 +151,7 @@ class MilvusDataStore:
             ]
         )
 
-        self.factory.create(request=self.documents)
+        self.vectorFactory.create(request=self.documents)
 
         logger.info(f"Upsert count: {UpsertResult.upsert_count}; errors: {UpsertResult.err_count}; "
                     f"success percentage: {UpsertResult.succ_count / UpsertResult.insert_count * 100}")
