@@ -1,2 +1,1 @@
-from .mongodb import Mongo
-from .mongodb import AsyncMongo
+from .mongodb import Mongo, AsyncMongo

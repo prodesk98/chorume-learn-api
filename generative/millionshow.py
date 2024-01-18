@@ -181,7 +181,6 @@ The questionnaire with just (1)one sentence, and the alternatives with only (5)f
 
 Topic: \"\"\"{self.theme}\"\"\"
 
-Use the context as a reference to create the quiz and the answers.
 The paragraphs in the context are separated by C<index>: <<context>>; format: C1: <context1>, C2: <context2>...
 Context: \"\"\"{await self.context(self.theme)}\"\"\"
 

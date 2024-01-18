@@ -48,6 +48,8 @@ Content-Type: application/json
 Authorization: Bearer {{Authorization}}
 
 {
-  "filter": {}
+  "filter": {
+    "created_by": "Proton"
+  }
 }
 

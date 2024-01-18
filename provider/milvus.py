@@ -2,7 +2,7 @@ from typing import List
 
 import tiktoken
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from pymilvus import connections, db, Collection, utility, Hits
+from pymilvus import connections, db, Collection, Hits
 
 from models import UpsertTasksDocument, DocumentTasksSearch, Vector
 
@@ -18,6 +18,12 @@ from loguru import logger
 
 from factory import VectorFactory
 
+connections.connect(
+    alias="default",
+    host=env.MILVUS_HOST,
+    port=env.MILVUS_PORT
+)
+
 class MilvusSearch:
     def __init__(self):
         if not db.connections.has_connection("default"):
@@ -26,9 +32,6 @@ class MilvusSearch:
                 host=env.MILVUS_HOST,
                 port=env.MILVUS_PORT
             )
-        if env.MILVUS_DB_NAME not in db.list_database():
-            db.create_database(env.MILVUS_DB_NAME)
-
         db.using_database(env.MILVUS_DB_NAME)
 
         self.collection = self.get_collection()
@@ -84,9 +87,6 @@ class MilvusDataStore:
                 host=env.MILVUS_HOST,
                 port=env.MILVUS_PORT
             )
-        if env.MILVUS_DB_NAME not in db.list_database():
-            db.create_database(env.MILVUS_DB_NAME)
-
         db.using_database(env.MILVUS_DB_NAME)
 
         self.collection = self.get_collection()
@@ -119,11 +119,6 @@ class MilvusDataStore:
 
     @staticmethod
     def get_collection() -> Collection:
-        if utility.has_collection(collection_name="brain"):
-            return Collection(
-                name=env.MILVUS_COLLECTION_NAME,
-                schema=MilvusSchema,
-            )
         collection = Collection(name=env.MILVUS_COLLECTION_NAME, schema=MilvusSchema)
         collection.create_index(field_name="embedding", index_params={
             'metric_type': 'L2',
