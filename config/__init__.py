@@ -13,7 +13,7 @@ class settings(BaseModel):
     OPENAI_EMBEDDING_MODEL: Optional[str] = getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-ada-002")
     OPENAI_MILLION_SHOW_MODEL: Optional[str] = getenv("OPENAI_MILLION_SHOW_MODEL", "gpt-4-1106-preview")
     AMQP_DSN: Optional[AmqpDsn] = getenv("AMQP_DSN", "pyamqp://guest:guest@rabbitmq:5672//")
-    MONGO_DSN: Optional[MongoDsn] = getenv("MONGO_DSN", "mongodb://admin:password123@localhost:27017")
+    MONGO_DSN: Optional[MongoDsn] = getenv("MONGO_DSN", "mongodb://root:default@mongo:27017")
     MONGO_DB_NAME: Optional[str] = getenv("MONGO_DB_NAME", "learn")
     MILVUS_HOST: Optional[str] = getenv("MILVUS_HOST", "standalone")
     MILVUS_PORT: Optional[int] = getenv("MILVUS_PORT", 19530)
