@@ -1,7 +1,7 @@
 ## install
 easy installation using Make
 ```
-cp env.template .env
+cp .env.template .env
 modify the .env
 
 make start
