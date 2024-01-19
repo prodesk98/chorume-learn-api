@@ -26,6 +26,7 @@ class Voice:
             }, headers={"Content-Type": "application/json", "xi-api-key": env.ELEVENLABS_API_KEY}) as response:
                 if response.status == 200:
                     chunk_size = 8192 # 8 KB
+                    chunk: bytes
                     async with aiofiles.tempfile.NamedTemporaryFile(delete=False) as temp_file:
                         async with aiofiles.open(temp_file.name, "wb") as file:
                             async for chunk in response.content.iter_chunked(chunk_size):

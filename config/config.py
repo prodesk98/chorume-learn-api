@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from ujson import loads
 
 configurations: dict
-with open("generative/config.json", "r") as rf:
+with open("config/config.json", "r") as rf:
     configurations = loads(rf.read())
     rf.close()
 
@@ -21,5 +21,3 @@ class Bot(BaseModel):
     millionshow_lang_topic: Optional[str] = millionshow.get("languages", {}).get("topic", "")
     millionshow_lang_context: Optional[str] = millionshow.get("languages", {}).get("context", "")
     millionshow_lang_alternatives: Optional[str] = millionshow.get("languages", {}).get("alternatives", "")
-
-bot = Bot()

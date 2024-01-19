@@ -24,7 +24,8 @@ from pathlib import Path
 
 import shutil
 
-from generative.config import bot
+from config import bot
+
 
 class ShowMillion:
     def __init__(self, theme: str, amount: int):
@@ -152,6 +153,7 @@ Resposta D, {alternatives[3]}.""".replace("\n", " ")
             }, headers={"Content-Type": "application/json", "xi-api-key": env.ELEVENLABS_API_KEY}) as response:
                 if response.status == 200:
                     chunk_size = 8192 # 8 KB
+                    chunk: bytes
                     async with aiofiles.tempfile.NamedTemporaryFile(delete=False) as temp_file:
                         async with aiofiles.open(temp_file.name, "wb") as file:
                             async for chunk in response.content.iter_chunked(chunk_size):
@@ -195,6 +197,7 @@ Alternatives in language: {bot.millionshow_lang_alternatives}.
 Output in JSON.""")
         ]
 
+        print(messages[0].content)
         llm = self.llmChatOpenAI(temperature=0)
         with get_openai_callback() as cb:
             response = await llm.ainvoke(input=messages)

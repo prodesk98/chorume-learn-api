@@ -15,7 +15,7 @@ from config import env
 
 from provider import MilvusSearch
 
-from generative.config import bot
+from config import bot
 
 
 class AIChorume:
@@ -63,14 +63,14 @@ class AIChorume:
 
     @property
     def salutation(self) -> str:
-        return f"Greet the user with {self.time}, informal words in the context of the answer, list below: {self.informal_greeting}"
+        return f"Greet the user with {self.time}, informal words in the context of the answer, list below:\n{self.informal_greeting}"
 
     async def aquestion(self, q: str) -> str:
         messages = [
             SystemMessage(
                 content=f"""{bot.chorume_personality}
 
-Use Brazilian swear words in the context of the answer, listed below:
+Use swear words in the context of the answer, listed below:
 {self.swear_words}
 
 {self.salutation}

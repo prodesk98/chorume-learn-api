@@ -3,6 +3,7 @@ from typing import Optional
 from dotenv import load_dotenv
 from pydantic import BaseModel, MongoDsn, AmqpDsn, AnyHttpUrl
 from os import getenv
+from .config import Bot
 load_dotenv()
 
 class settings(BaseModel):
@@ -28,3 +29,4 @@ class settings(BaseModel):
     DEBUG: Optional[bool] = (getenv("DEBUG", "true") == "true")
 
 env = settings()
+bot = Bot()
