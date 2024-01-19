@@ -12,7 +12,8 @@ from models import (
     AnswerResponse, AnswerRequest, TextToVoiceResponse,
     TextToVoiceRequest, VoicePlayRequest, VoicePlayResponse,
     MillionShowResponse, MillionShowRequest, Vector,
-    VectorFilterRequest, AllVectorFactoryRequest
+    VectorFilterRequest, AllVectorFactoryRequest, VectorDeleteRequest,
+    AllDeleteVectorFactoryRequest
 )
 
 from loguru import logger
@@ -158,6 +159,19 @@ async def vectors(request: VectorFilterRequest):
                 limit=request.limit
             )
         )
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail=f"{str(e)}")
+
+@api.delete(
+    "/vector/{id}",
+    response_model=List[bool]
+)
+async def delete_vector(request: VectorDeleteRequest):
+    try:
+        await VectorFactory().adelete_all(request=AllDeleteVectorFactoryRequest(
+            ids=request.ids
+        ))
     except Exception as e:
         logger.error(e)
         raise HTTPException(status_code=500, detail=f"{str(e)}")
