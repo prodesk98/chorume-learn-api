@@ -6,7 +6,7 @@ from routes import api
 
 app = FastAPI(
     title="lapi",
-    docs_url=None,
+    docs_url="/docs",
     debug=env.DEBUG
 )
 
