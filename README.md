@@ -17,7 +17,7 @@ Authorization: Bearer {{Authorization}}
 
 {
   "content": "Guido Van Rossum, a computer programmer in the Netherlands, created Python.",
-  username": "Proton"
+  "username": "Proton"
 }
 ```
 
