@@ -3,8 +3,10 @@ from typing import Optional, List
 from pydantic import BaseModel
 from ujson import loads
 
+from pathlib import Path
+
 configurations: dict
-with open("config/config.json", "r") as rf:
+with open(f"{Path(__file__).resolve().parent}/config.json", "r") as rf:
     configurations = loads(rf.read())
     rf.close()
 
