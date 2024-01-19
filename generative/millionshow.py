@@ -24,6 +24,8 @@ from pathlib import Path
 
 import shutil
 
+from generative.config import bot
+
 class ShowMillion:
     def __init__(self, theme: str, amount: int):
         self.theme = theme
@@ -164,7 +166,7 @@ Resposta D, {alternatives[3]}.""".replace("\n", " ")
 
     async def generate(self) -> ShowMillionResponse:
         messages = [
-            SystemMessage(content=f"""You are a Quizzes Game (Quiz Show) generator related to technology and programming.
+            SystemMessage(content=f"""You are a Quizzes Game (Quiz Show) generator related to {bot.millionshow_discipline}.
 Use the topic and the context as a reference to generate the question and the alternatives.
 The context and the topic only as a reference.
 Write (1)one questionnaire with (4)four alternatives: a, b, c, and d.
@@ -186,9 +188,9 @@ question: the quiz question.
 truth: the letter of the correct alternative.
 alternatives: list of alternatives based on the correct format: a) <a>, b) <b>, c) <c>, d) <d>
 
-Topic language: Portuguese (Brazil).
-Context language: Portuguese (Brazil).
-Alternatives in language: Portuguese (Brazil).
+Topic language: {bot.millionshow_lang_topic}.
+Context language: {bot.millionshow_lang_context}.
+Alternatives in language: {bot.millionshow_lang_alternatives}.
 
 Output in JSON.""")
         ]

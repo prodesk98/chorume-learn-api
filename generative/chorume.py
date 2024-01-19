@@ -15,6 +15,8 @@ from config import env
 
 from provider import MilvusSearch
 
+from generative.config import bot
+
 
 class AIChorume:
     def __init__(self, username: str):
@@ -41,31 +43,11 @@ class AIChorume:
 
     @property
     def swear_words(self) -> str:
-        return "\n".join([
-            f"- {sw}" for sw in [
-                "Caralho",
-                "Porra",
-                "Puta que Pariu",
-                "Merda",
-                "Vai tomar no cú",
-                "Vai se foder",
-                "Viado",
-                "Puta Merda",
-                "Cacete"
-            ]
-        ])
+        return "\n".join([f"- {sw}" for sw in bot.chorume_swear_words])
 
     @property
     def informal_greeting(self):
-        return "\n".join([
-            f"- {ig}" for ig in [
-                "fala viado",
-                "fala arrombado",
-                "iae viado",
-                "iae viado",
-                "entendeu ou preciso codar?"
-            ]
-        ])
+        return "\n".join([f"- {ig}" for ig in bot.chorume_informal_greeting])
 
     def current_time(self) -> str:
         hour = datetime.now().hour
@@ -86,10 +68,7 @@ class AIChorume:
     async def aquestion(self, q: str) -> str:
         messages = [
             SystemMessage(
-                content=f"""You are a programming expert, a senior with 10 years of experience called Chorume.
-Answer the user's question using context.
-Your personality is friendly, welcoming, relaxed and with a touch of good humor. Developer emojis.
-You are from Rio de Janeiro and have a Rio accent.
+                content=f"""{bot.chorume_personality}
 
 Use Brazilian swear words in the context of the answer, listed below:
 {self.swear_words}
@@ -100,9 +79,9 @@ Use context to create an answer to the question.
 The paragraphs in the context are separated by C<index>: <<context>>; format: C1: <context1>, C2: <context2>...
 Context: \"\"\"{await self.context(q)}\"\"\"
 
-context language: Portuguese (Brazil).
-language: Portuguese (Brazil).
-answer in language: Portuguese (Brazil).
+context language: {bot.chorume_lang_context}.
+language: {bot.chorume_lang_language}.
+answer in language: {bot.chorume_lang_answer}.
 
 respond with a maximum of 3 sentences."""
             ),
