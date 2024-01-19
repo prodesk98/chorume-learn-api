@@ -69,7 +69,7 @@ async def semantic_search(q = Query("", title="query", max_length=50)):
     "/asking",
     response_model=AnswerResponse
 )
-async def answer(request: AnswerRequest):
+async def asking(request: AnswerRequest):
     try:
         stime = time()
         gen = AIChorume(request.username)
