@@ -46,3 +46,6 @@ class VectorFilterRequest(BaseModel):
     sort: Optional[dict] = {"_id": -1}
     skip: Optional[int] = 0
     limit: Optional[int] = 100
+
+class VectorDeleteRequest(BaseModel):
+    ids: List[str]
