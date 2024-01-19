@@ -1,6 +1,4 @@
 import asyncio
-import contextvars
-import functools
 import re
 from typing import Dict, Union, List
 
@@ -35,7 +33,7 @@ class ShowMillion:
     async def context(q: str) -> str:
         milvus = MilvusSearch()
         return "\n".join(["C%i: <%s>" % (i+1, r.text.replace("\n", ""))
-                          for i, r in enumerate(await milvus.asearch(query=q, k=2))])[:526]
+                          for i, r in enumerate(await milvus.asearch(query=q, k=2))])
 
     @staticmethod
     def llmChatOpenAI(temperature: float = 0.0) -> ChatOpenAI:
@@ -119,13 +117,6 @@ class ShowMillion:
         )
 
     @staticmethod
-    async def to_thread(func, /, *args, **kwargs):
-        loop = asyncio.get_running_loop()
-        ctx = contextvars.copy_context()
-        func_call = functools.partial(ctx.run, func, *args, **kwargs)
-        return await loop.run_in_executor(None, func_call)
-
-    @staticmethod
     def mix_audio(absolute_path: str) -> Path:
         sm_sound = AudioSegment.from_file("audios/show_million.mp3")
         gen_sound = AudioSegment.from_file(absolute_path)
@@ -167,7 +158,7 @@ Resposta D, {alternatives[3]}.""".replace("\n", " ")
                         await temp_file.close()
                     file_mp3 = f"{temp_file.name}.mp3"
                     shutil.move(temp_file.name, file_mp3)
-                    sound: Path = await self.to_thread(self.mix_audio, file_mp3)
+                    sound: Path = await asyncio.to_thread(self.mix_audio, file_mp3)
                     return f"{env.LEARN_FRONT_END}/files/{sound.absolute().name.split('/')[-1]}"
         return None
 
@@ -207,8 +198,8 @@ Output in JSON.""")
             response = await llm.ainvoke(input=messages)
             logger.info(f"LLM({env.OPENAI_MILLION_SHOW_MODEL}); Cost US$%.5f; Tokens {cb.total_tokens}" % cb.total_cost)
 
-        quiz = await self.to_thread(self.marshal, response.content)
-        quiz_parsed: dict = await self.to_thread(self.build, quiz)
+        quiz = await asyncio.to_thread(self.marshal, response.content)
+        quiz_parsed: dict = await asyncio.to_thread(self.build, quiz)
 
         if not quiz_parsed:
             return ShowMillionResponse()

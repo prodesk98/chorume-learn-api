@@ -18,11 +18,6 @@ from loguru import logger
 
 from factory import VectorFactory
 
-connections.connect(
-    alias="default",
-    host=env.MILVUS_HOST,
-    port=env.MILVUS_PORT
-)
 
 class MilvusSearch:
     def __init__(self):
@@ -35,6 +30,7 @@ class MilvusSearch:
         db.using_database(env.MILVUS_DB_NAME)
 
         self.collection = self.get_collection()
+        self.collection.load()
         self.embeddings_model = OpenAIEmbeddings(
             model=env.OPENAI_EMBEDDING_MODEL,
             openai_api_key=env.OPENAI_API_KEY
@@ -53,28 +49,30 @@ class MilvusSearch:
     async def asearch(self, query: str, k: int = 3) -> List[DocumentTasksSearch]:
         try:
             embedding = await self.aembedding(query)
-            self.collection.load()
             SearchResult = self.collection.search(
                 **dict(
                     data=[embedding],
                     anns_field="embedding",
                     param={
-                        "metric_type": "L2",
+                        "metric_type": "COSINE",
                         'index_type': "IVF_FLAT",
-                        "offset": 0,
-                        "ignore_growing": False,
                         "params": {
-                            "nlist": 2048
+                            "nprobe": 12
                         }
                     },
                     limit=k,
-                    output_fields=['text'],
+                    output_fields=['id', 'text'],
                 )
             )
             result: Hits = SearchResult[0]
             if len(result.ids) == 0:
                 return []
-            return [DocumentTasksSearch(text=hit.entity.get('text')) for hit in result]
+            return [
+                DocumentTasksSearch(
+                    id=hit.entity.get('id'),
+                    text=hit.entity.get('text'),
+                ) for hit in result
+            ]
         except Exception as err:
             logger.error(err)
             return []
@@ -96,7 +94,7 @@ class MilvusDataStore:
             openai_api_key=env.OPENAI_API_KEY
         )
         self.vectorFactory = VectorFactory()
-        self.documents: List[Vector] = []
+        self.vectors: List[Vector] = []
 
     def _tokenizer(self, text: str) -> int:
         tokens = self.tokenizer.encode(
@@ -120,38 +118,75 @@ class MilvusDataStore:
     @staticmethod
     def get_collection() -> Collection:
         collection = Collection(name=env.MILVUS_COLLECTION_NAME, schema=MilvusSchema)
-        collection.create_index(field_name="embedding", index_params={
-            'metric_type': 'L2',
-            'index_type': "IVF_FLAT",
-            'params': {
-                "nlist": 2048
+        collection.create_index(
+            field_name="embedding",
+            index_params={
+                'metric_type': 'COSINE',
+                'index_type': "IVF_FLAT",
+                'params': {
+                    "nlist": 128
+                }
             }
-        })
+        )
         return collection
+
+    def score(self, embedding: List[List[float]]) -> List[float]:
+        SearchResults = self.collection.search(
+            **dict(
+                data=embedding,
+                anns_field="embedding",
+                param={
+                    "metric_type": "COSINE",
+                    'index_type': "IVF_FLAT",
+                    "params": {
+                        "nprobe": 12
+                    }
+                },
+                limit=1,
+                output_fields=['id'],
+            )
+        )
+        search: Hits
+        results: List[float] = []
+
+        for search in SearchResults:
+            results.append(search.distances[0])
+        return results
 
     def upsert(self, document: UpsertTasksDocument) -> bool:
         documents = self.split_text(content=document.content)
-        ids = [md5(doc.encode()).hexdigest() for doc in documents]
         embeddings = self.embeddings_documents(documents=documents)
 
-        for i, doc in enumerate(documents):
-            self.documents.append(
-                Vector().create(
-                    id=ids[i],
-                    content=doc,
-                    created_by=document.username,
-                )
-            )
+        valid_documents: List[str] = []
+        valid_embeddings: List[List[float]] = []
+        # removes duplicate documents using the similarity score
+        for k, score in enumerate(self.score(embeddings)):
+            if score <= 0.99:
+                valid_documents.append(documents[k])
+                valid_embeddings.append(embeddings[k])
+
+        ids = [md5(valid_doc.encode()).hexdigest() for valid_doc in valid_documents]
+
+        if len(ids) == 0:
+            return False
+
+        self.vectors = [
+            Vector().create(
+                id=ids[i],
+                content=doc,
+                created_by=document.username,
+            ) for i, doc in enumerate(valid_documents)
+        ]
 
         UpsertResult = self.collection.upsert(
             data=[
                 ids,
-                documents,
-                embeddings,
+                valid_documents,
+                valid_embeddings,
             ]
         )
 
-        self.vectorFactory.create(request=self.documents)
+        self.vectorFactory.create(request=self.vectors)
 
         logger.info(f"Upsert count: {UpsertResult.upsert_count}; errors: {UpsertResult.err_count}; "
                     f"success percentage: {UpsertResult.succ_count / UpsertResult.insert_count * 100}")

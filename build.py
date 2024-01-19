@@ -34,9 +34,9 @@ db.using_database("knowledge")
 
 collection = Collection(name=MILVUS_COLLECTION_NAME, schema=Schema)
 collection.create_index(field_name="embedding", index_params={
-    'metric_type': 'L2',
+    'metric_type': 'COSINE',
     'index_type': "IVF_FLAT",
-    'params': {"nlist": 2048}
+    'params': {"nlist": 128}
 })
 
 if not utility.has_collection(MILVUS_COLLECTION_NAME):

@@ -38,7 +38,7 @@ Content-Type: application/json
 Authorization: Bearer {{Authorization}}
 
 {
-  "theme": "O criado do C++",
+  "theme": "Nome completo do alan turing",
   "amount": 100
 }
 
@@ -50,6 +50,11 @@ Authorization: Bearer {{Authorization}}
 {
   "filter": {
     "created_by": "Proton"
+  },
+  "skip": 0,
+  "limit": 15,
+  "sort": {
+    "_id": -1
   }
 }
 

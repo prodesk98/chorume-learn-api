@@ -12,7 +12,7 @@ class UpsertRequest(BaseModel):
 
 class QueryResponse(BaseModel):
     success: Optional[bool] = True
-    responses: Optional[List[str]] = []
+    responses: Optional[List[dict]] = []
 
 class AnswerResponse(BaseModel):
     success: Optional[bool] = True

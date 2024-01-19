@@ -8,4 +8,5 @@ class UpsertTasksDocument(BaseModel):
     username: Optional[str] = None
 
 class DocumentTasksSearch(BaseModel):
+    id: str
     text: str

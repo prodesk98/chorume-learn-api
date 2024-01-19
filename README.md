@@ -2,6 +2,8 @@
 easy installation using Make
 ```
 cp env.template .env
+edit LEARN_TOKEN= in .env
+
 make start
 ```
 
@@ -31,7 +33,7 @@ Authorization: Bearer {{Authorization}}
 }
 ```
 
-### Million show
+### Quiz
 ```
 POST http://localhost:3001/api/million-show
 Content-Type: application/json

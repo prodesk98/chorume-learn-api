@@ -28,7 +28,7 @@ class AIChorume:
     async def context(q: str) -> str:
         milvus = MilvusSearch()
         return "\n".join(["C%i: <%s>" % (i + 1, r.text.replace("\n", ""))
-                          for i, r in enumerate(await milvus.asearch(query=q, k=2))])[:526]
+                          for i, r in enumerate(await milvus.asearch(query=q, k=2))])
 
     @staticmethod
     def llmChatOpenAI(temperature: float = 0.0) -> ChatOpenAI:

@@ -53,7 +53,12 @@ async def semantic_search(q = Query("", title="query", max_length=50)):
 
         logger.debug(f"Semantic search was executed successfully; time: {time() - stime}")
         return QueryResponse(
-            responses=[resp.text for resp in responses]
+            responses=[
+                {
+                    "id": resp.id,
+                    "text": resp.text
+                } for resp in responses
+            ]
         )
     except Exception as e:
         logger.error(e)
