@@ -121,6 +121,27 @@ class APITest(unittest.TestCase):
             second=True
         )
 
+    def test_get_all_vectors(self):
+        self.assertEqual(
+            first=request(
+                url="http://localhost:3001/api/vectors",
+                m="post",
+                headers=None,
+                payload={
+                  "filter": {
+                    "created_by": "Proton"
+                  },
+                  "skip": 0,
+                  "limit": 15,
+                  "sort": {
+                    "_id": -1
+                  }
+                },
+                params=None,
+            ),
+            second=True
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
