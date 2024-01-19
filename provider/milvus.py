@@ -1,8 +1,9 @@
+import asyncio
 from typing import List
 
 import tiktoken
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from pymilvus import connections, db, Collection, Hits
+from pymilvus import connections, db, Collection, Hits, SearchResult
 
 from models import UpsertTasksDocument, DocumentTasksSearch, Vector
 
@@ -46,11 +47,23 @@ class MilvusSearch:
     async def aembedding(self, query: str) -> List[float]:
         return await self.embeddings_model.aembed_query(query)
 
+    async def adelete(self, ids: List[str]) -> None:
+        try:
+            self.collection.delete(
+                expr="id in [%s]" % (f"{_id}," for _id in ids)
+            )
+        except Exception as e:
+            logger.error(e)
+
+    def search(self, data: dict) -> SearchResult:
+        return self.collection.search(**data)
+
     async def asearch(self, query: str, k: int = 3) -> List[DocumentTasksSearch]:
         try:
             embedding = await self.aembedding(query)
-            SearchResult = self.collection.search(
-                **dict(
+            searchResult = await asyncio.to_thread(
+                self.search,
+                dict(
                     data=[embedding],
                     anns_field="embedding",
                     param={
@@ -64,15 +77,14 @@ class MilvusSearch:
                     output_fields=['id', 'text'],
                 )
             )
-            result: Hits = SearchResult[0]
-            if len(result.ids) == 0:
-                return []
-            return [
-                DocumentTasksSearch(
-                    id=hit.entity.get('id'),
-                    text=hit.entity.get('text'),
-                ) for hit in result
-            ]
+            result: Hits
+            for result in searchResult:
+                return [
+                    DocumentTasksSearch(
+                        id=hit.entity.get('id'),
+                        text=hit.entity.get('text'),
+                    ) for hit in result
+                ]
         except Exception as err:
             logger.error(err)
             return []
@@ -131,7 +143,7 @@ class MilvusDataStore:
         return collection
 
     def score(self, embedding: List[List[float]]) -> List[float]:
-        SearchResults = self.collection.search(
+        searchResult = self.collection.search(
             **dict(
                 data=embedding,
                 anns_field="embedding",
@@ -143,14 +155,14 @@ class MilvusDataStore:
                     }
                 },
                 limit=1,
-                output_fields=['id'],
+                output_fields=[],
             )
         )
-        search: Hits
         results: List[float] = []
+        result: Hits
 
-        for search in SearchResults:
-            results.append(search.distances[0])
+        for result in searchResult:
+            results.extend(result.distances)
         return results
 
     def upsert(self, document: UpsertTasksDocument) -> bool:
