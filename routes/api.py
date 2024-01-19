@@ -13,7 +13,7 @@ from models import (
     TextToVoiceRequest, VoicePlayRequest, VoicePlayResponse,
     MillionShowResponse, MillionShowRequest, Vector,
     VectorFilterRequest, AllVectorFactoryRequest, VectorDeleteRequest,
-    AllDeleteVectorFactoryRequest
+    AllDeleteVectorFactoryRequest, VectorDeleteResponse, VectorUsernamesDeleteRequest, VectorUsernamesDeleteResponse
 )
 
 from loguru import logger
@@ -149,7 +149,7 @@ async def million_show(request: MillionShowRequest):
     "/vectors",
     response_model=List[Vector]
 )
-async def vectors(request: VectorFilterRequest):
+async def create_vector(request: VectorFilterRequest):
     try:
         return await VectorFactory().afind_all(
             AllVectorFactoryRequest(
@@ -164,14 +164,48 @@ async def vectors(request: VectorFilterRequest):
         raise HTTPException(status_code=500, detail=f"{str(e)}")
 
 @api.delete(
-    "/vector/{id}",
-    response_model=List[bool]
+    "/vectors",
+    response_model=VectorDeleteResponse
 )
-async def delete_vector(request: VectorDeleteRequest):
+async def delete_vectors_by_ids(request: VectorDeleteRequest):
     try:
-        await VectorFactory().adelete_all(request=AllDeleteVectorFactoryRequest(
-            ids=request.ids
-        ))
+        await VectorFactory().adelete_all(request=AllDeleteVectorFactoryRequest(ids=request.ids))
+        await MilvusSearch().adelete(ids=request.ids)
+
+        return VectorDeleteResponse()
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail=f"{str(e)}")
+
+
+@api.delete(
+    "/vectors/usernames",
+    response_model=VectorUsernamesDeleteResponse
+)
+async def delete_vectors_by_username(request: VectorUsernamesDeleteRequest):
+    try:
+        vectors = [
+            _ for username in request.usernames
+            for _ in await VectorFactory().afind_all(
+                AllVectorFactoryRequest(
+                    filter={"created_by": username},
+                    sort={"_id": -1},
+                    skip=0,
+                    limit=250
+                )
+            )
+        ]
+        if len(vectors) == 0:
+            return VectorUsernamesDeleteResponse()
+
+        ids: List[str] = [
+            vec.id for vec in vectors
+        ]
+
+        await VectorFactory().adelete_all(request=AllDeleteVectorFactoryRequest(ids=ids))
+        await MilvusSearch().adelete(ids=ids)
+
+        return VectorUsernamesDeleteResponse()
     except Exception as e:
         logger.error(e)
         raise HTTPException(status_code=500, detail=f"{str(e)}")
