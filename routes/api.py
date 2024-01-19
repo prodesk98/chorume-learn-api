@@ -13,7 +13,8 @@ from models import (
     TextToVoiceRequest, VoicePlayRequest, VoicePlayResponse,
     MillionShowResponse, MillionShowRequest, Vector,
     VectorFilterRequest, AllVectorFactoryRequest, VectorDeleteRequest,
-    AllDeleteVectorFactoryRequest, VectorDeleteResponse, VectorUsernamesDeleteRequest, VectorUsernamesDeleteResponse
+    AllDeleteVectorFactoryRequest, VectorDeleteResponse, VectorUsernamesDeleteRequest,
+    VectorUsernamesDeleteResponse
 )
 
 from loguru import logger
@@ -52,7 +53,9 @@ async def semantic_search(q = Query("", title="query", max_length=50)):
         milvus = MilvusSearch()
         responses = await milvus.asearch(query=q)
 
-        logger.debug(f"Semantic search was executed successfully; time: {time() - stime}")
+        if env.DEBUG:
+            logger.debug(f"Semantic search was executed successfully; time: {time() - stime}")
+
         return QueryResponse(
             responses=[
                 {
@@ -75,7 +78,9 @@ async def asking(request: AnswerRequest):
         gen = AIChorume(request.username)
         response = await gen.aquestion(request.q)
 
-        logger.debug(f"question answered successfully; time: {time() - stime}")
+        if env.DEBUG:
+            logger.debug(f"question answered successfully; time: {time() - stime}")
+
         return AnswerResponse(
             response=response
         )
@@ -100,7 +105,9 @@ async def text_to_speech(request: TextToVoiceRequest):
         if audio.absolute_path is None:
             raise HTTPException(status_code=500, detail="Unable to transform text into audio.")
 
-        logger.debug(f"text converted to audio executed successfully; time: {time() - stime}")
+        if env.DEBUG:
+            logger.debug(f"text converted to audio executed successfully; time: {time() - stime}")
+
         return TextToVoiceResponse(
             path=audio.absolute_path,
             url=f"{env.LEARN_FRONT_END}/files/{audio.absolute_path.split('/')[-1]}"
@@ -134,7 +141,9 @@ async def million_show(request: MillionShowRequest):
         millionShowResponse = await ShowMillion(
             theme=request.theme, amount=request.amount).generate()
 
-        logger.debug(f"Quiz generated successfully; time: {time() - stime}")
+        if env.DEBUG:
+            logger.debug(f"Quiz generated successfully; time: {time() - stime}")
+
         return MillionShowResponse(
             question=millionShowResponse.question,
             alternatives=millionShowResponse.alternatives,
