@@ -42,7 +42,7 @@ Authorization: Bearer {{Authorization}}
   "amount": 100
 }
 
-### vectors
+### list vectors
 POST http://localhost:3001/api/vectors
 Content-Type: application/json
 Authorization: Bearer {{Authorization}}
@@ -58,3 +58,22 @@ Authorization: Bearer {{Authorization}}
   }
 }
 
+### delete vectors
+DELETE http://localhost:3001/api/vectors
+Content-Type: application/json
+Authorization: Bearer {{Authorization}}
+
+{
+  "ids": [
+  ]
+}
+
+### delete vectors by username
+DELETE http://localhost:3001/api/vectors/usernames
+Content-Type: application/json
+Authorization: Bearer {{Authorization}}
+
+{
+  "usernames": [
+  ]
+}
