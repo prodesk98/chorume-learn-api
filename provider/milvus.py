@@ -48,15 +48,18 @@ class MilvusSearch:
         return await self.embeddings_model.aembed_query(query)
 
     async def adelete(self, ids: List[str]) -> None:
-        try:
-            self.collection.delete(
-                expr="id in [%s]" % (f"{_id}," for _id in ids)
-            )
-        except Exception as e:
-            logger.error(e)
+        return await asyncio.to_thread(self.delete, ids)
 
     def search(self, data: dict) -> SearchResult:
         return self.collection.search(**data)
+
+    def delete(self, ids: List[str]) -> None:
+        try:
+            self.collection.delete(
+                expr=f"id in {str(ids)}"
+            )
+        except Exception as e:
+            logger.error(e)
 
     async def asearch(self, query: str, k: int = 3) -> List[DocumentTasksSearch]:
         try:
@@ -100,6 +103,7 @@ class MilvusDataStore:
         db.using_database(env.MILVUS_DB_NAME)
 
         self.collection = self.get_collection()
+        self.collection.load()
         self.tokenizer = tiktoken.encoding_for_model(model_name=env.OPENAI_EMBEDDING_MODEL)
         self.embeddings_model = OpenAIEmbeddings(
             model=env.OPENAI_EMBEDDING_MODEL,
@@ -163,7 +167,7 @@ class MilvusDataStore:
 
         for result in searchResult:
             results.extend(result.distances)
-        return results
+        return [q*0 for q in range(len(embedding))] if len(results) == 0 else results
 
     def upsert(self, document: UpsertTasksDocument) -> bool:
         documents = self.split_text(content=document.content)
