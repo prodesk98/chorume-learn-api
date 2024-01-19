@@ -49,3 +49,12 @@ class VectorFilterRequest(BaseModel):
 
 class VectorDeleteRequest(BaseModel):
     ids: List[str]
+
+class VectorDeleteResponse(BaseModel):
+    success: Optional[bool] = True
+
+class VectorUsernamesDeleteRequest(BaseModel):
+    usernames: List[str]
+
+class VectorUsernamesDeleteResponse(BaseModel):
+    success: Optional[bool] = True
