@@ -17,9 +17,9 @@ class Bot(BaseModel):
     chorume_lang_context: Optional[str] = chorume.get("languages", {}).get("context", "")
     chorume_lang_language: Optional[str] = chorume.get("languages", {}).get("language", "")
     chorume_lang_answer: Optional[str] = chorume.get("languages", {}).get("answer", "")
-    millionshow_discipline: Optional[str] = chorume.get("discipline", "")
-    millionshow_lang_topic: Optional[str] = chorume.get("languages", {}).get("topic", "")
-    millionshow_lang_context: Optional[str] = chorume.get("languages", {}).get("context", "")
-    millionshow_lang_alternatives: Optional[str] = chorume.get("languages", {}).get("alternatives", "")
+    millionshow_discipline: Optional[str] = millionshow.get("discipline", "")
+    millionshow_lang_topic: Optional[str] = millionshow.get("languages", {}).get("topic", "")
+    millionshow_lang_context: Optional[str] = millionshow.get("languages", {}).get("context", "")
+    millionshow_lang_alternatives: Optional[str] = millionshow.get("languages", {}).get("alternatives", "")
 
 bot = Bot()
