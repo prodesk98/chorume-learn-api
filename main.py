@@ -5,7 +5,7 @@ from config import env
 from routes import api
 
 app = FastAPI(
-    title="lapi",
+    title="Learn API",
     docs_url="/docs",
     debug=env.DEBUG
 )
