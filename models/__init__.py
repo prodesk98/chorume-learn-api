@@ -2,7 +2,7 @@ from .api import (
     UpsertResponse, QueryResponse, UpsertRequest,
     AnswerResponse, AnswerRequest, TextToVoiceRequest,
     TextToVoiceResponse, MillionShowRequest, MillionShowResponse,
-    VectorFilterRequest
+    VectorFilterRequest, VectorDeleteRequest
 )
 from .documents import Document
 from .tasks import UpsertTasksDocument, DocumentTasksSearch
