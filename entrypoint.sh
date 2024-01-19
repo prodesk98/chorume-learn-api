@@ -10,6 +10,7 @@ if [ "$app_type" = "app" ]; then
 
 elif [ "$app_type" = "worker" ]; then
   # shellcheck disable=SC2086
-  celery -A tasks.tasks worker --loglevel=INFO --concurrency=$CONCURRENCY
+  echo "waiting 15 seconds..."
+  sleep 15 && celery -A tasks.tasks worker --loglevel=INFO --concurrency=$CONCURRENCY
 
 fi
