@@ -6,7 +6,7 @@ from os import getenv
 from .config import Bot
 load_dotenv()
 
-class settings(BaseModel):
+class Settings(BaseModel):
     LEARN_VERSION: Optional[str] = getenv("LEARN_VERSION", "0.0.1")
     LEARN_TOKEN: Optional[str] = getenv("LEARN_TOKEN", None)
     OPENAI_API_KEY: Optional[str] = getenv("OPENAI_API_KEY", None)
@@ -28,5 +28,5 @@ class settings(BaseModel):
     LEARN_FRONT_END: Optional[AnyHttpUrl] = getenv("LEARN_FRONT_END", "http://localhost:3001")
     DEBUG: Optional[bool] = (getenv("DEBUG", "true") == "true")
 
-env = settings()
+env = Settings()
 bot = Bot()

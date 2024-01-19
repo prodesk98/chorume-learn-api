@@ -196,8 +196,6 @@ Alternatives in language: {bot.millionshow_lang_alternatives}.
 
 Output in JSON.""")
         ]
-
-        print(messages[0].content)
         llm = self.llmChatOpenAI(temperature=0)
         with get_openai_callback() as cb:
             response = await llm.ainvoke(input=messages)
