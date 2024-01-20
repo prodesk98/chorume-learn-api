@@ -13,11 +13,11 @@ install_docker:
 	rm -rf get-docker.sh
 
 start:
-	# atualiza os apps, constrói os containers, sobe os apps e gera as regras de firewall
+	# atualiza os apps, constrói os containers, sobe os apps
 	docker compose pull && docker compose build && docker compose up -d
 	# executa o build interno da api
 	sleep 10 && docker exec -it learn-api python build.py
 
 stop:
-	# derruba os apps e excluí as regras de firewall
+	# derruba os apps
 	docker compose down
