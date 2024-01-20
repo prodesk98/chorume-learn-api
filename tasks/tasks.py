@@ -1,9 +1,6 @@
 from celery import Celery
-
 from config import env
-
 from models import UpsertTasksDocument
-
 from provider import MilvusDataStore
 
 celery = Celery(

@@ -1,22 +1,14 @@
 import asyncio
 from typing import List
-
 import tiktoken
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pymilvus import connections, db, Collection, Hits, SearchResult
-
 from models import UpsertTasksDocument, DocumentTasksSearch, Vector
-
 from schemas import MilvusSchema
-
 from langchain_openai import OpenAIEmbeddings
-
 from config import env
-
 from hashlib import md5
-
 from loguru import logger
-
 from factory import VectorFactory
 
 

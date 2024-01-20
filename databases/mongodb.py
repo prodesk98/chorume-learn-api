@@ -1,6 +1,5 @@
 import asyncio
 from typing import List, Dict, Union
-
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from pymongo import MongoClient
 from pymongo.collection import Collection

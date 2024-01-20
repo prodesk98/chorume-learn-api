@@ -1,6 +1,5 @@
-from datetime import datetime
-
 import asyncio
+from datetime import datetime
 from langchain_community.callbacks import get_openai_callback
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 

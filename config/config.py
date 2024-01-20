@@ -1,8 +1,6 @@
 from typing import Optional, List
-
 from pydantic import BaseModel
 from ujson import loads
-
 from pathlib import Path
 
 configurations: dict

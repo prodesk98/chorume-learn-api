@@ -1,11 +1,8 @@
 from typing import List
-
 from config import env
 from provider import MilvusSearch, Voice
 from security import validate_token
-
 from tasks import upsert as TaskUpsert
-
 from generative import AIChorume, ShowMillion
 from models import (
     UpsertResponse, UpsertRequest, QueryResponse,
@@ -16,11 +13,9 @@ from models import (
     AllDeleteVectorFactoryRequest, VectorDeleteResponse, VectorUsernamesDeleteRequest,
     VectorUsernamesDeleteResponse
 )
-
 from loguru import logger
 from fastapi import Depends, HTTPException, Body, Query, APIRouter
 from time import time
-
 from factory import VectorFactory
 
 

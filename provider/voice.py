@@ -1,10 +1,9 @@
 import asyncio
 import shutil
+import aiofiles
 
 from models import TextToVoiceRequest, Audio
 from aiohttp import ClientSession
-import aiofiles
-
 from config import env
 
 

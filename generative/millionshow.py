@@ -1,29 +1,20 @@
 import asyncio
 import re
-from typing import Dict, Union, List
-
 import aiofiles
+import shutil
+from typing import Dict, Union, List
 from aiohttp import ClientSession
 from langchain_community.callbacks import get_openai_callback
 from langchain_openai import ChatOpenAI
 from loguru import logger
-
 from config import env
 from models import ShowMillionResponse
-
 from langchain.schema import SystemMessage
-
 from json import loads, JSONDecodeError
-
 from provider import MilvusSearch
-
 from random import shuffle
-
 from pydub import AudioSegment
 from pathlib import Path
-
-import shutil
-
 from config import bot
 
 
