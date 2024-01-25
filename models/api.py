@@ -34,6 +34,7 @@ class AnswerRequest(BaseModel):
 class GenQuizRequest(BaseModel):
     theme: Optional[str] = Field(..., max_length=100)
     amount: Optional[int] = 100
+    namespace: Optional[str] = Field("default", max_length=32)
 
 class GenQuizResponse(BaseModel):
     success: Optional[bool] = True

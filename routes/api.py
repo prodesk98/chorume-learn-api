@@ -132,7 +132,7 @@ async def questionnaire(request: GenQuizRequest):
         )
     try:
         stime = time()
-        quiz = await GenQuiz(theme=request.theme, amount=request.amount).generate()
+        quiz = await GenQuiz(theme=request.theme, amount=request.amount).generate(request.namespace)
 
         if env.DEBUG:
             logger.debug(f"Quiz generated successfully; time: {time() - stime}")

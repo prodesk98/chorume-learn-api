@@ -24,10 +24,10 @@ class GenQuiz:
         self.amount = amount
 
     @staticmethod
-    async def context(q: str) -> str:
+    async def context(q: str, namespace: str = "default") -> str:
         milvus = MilvusSearch()
         return "\n".join(["C%i: <%s>" % (i+1, r.text.replace("\n", ""))
-                          for i, r in enumerate(await milvus.asearch(query=q, k=2))])
+                          for i, r in enumerate(await milvus.asearch(query=q, k=2, ns=namespace))])
 
     @staticmethod
     def llmChatOpenAI(temperature: float = 0.0) -> ChatOpenAI:
@@ -150,7 +150,7 @@ Resposta D, {alternatives[3]}.""".replace("\n", " ")
                     sound: Path = await asyncio.to_thread(self.mix_audio, file_mp3)
                     return f"{env.LEARN_FRONT_END}/files/{sound.absolute().name.split('/')[-1]}"
 
-    async def generate(self) -> GenQuizResponse:
+    async def generate(self, namespace: str = "default") -> GenQuizResponse:
         messages = [
             SystemMessage(content=f"""You are a Quizzes Game (Quiz Show) generator related to {bot.quiz_discipline}.
 Use the topic and the context as a reference to generate the question and the alternatives.
@@ -161,7 +161,7 @@ The questionnaire with just (1)one sentence, and the alternatives with only (5)f
 Topic: \"\"\"{self.theme}\"\"\"
 
 The paragraphs in the context are separated by C<index>: <<context>>; format: C1: <context1>, C2: <context2>...
-Context: \"\"\"{await self.context(self.theme)}\"\"\"
+Context: \"\"\"{await self.context(self.theme, namespace)}\"\"\"
 
 JSON format:
 {{"question":"<question>","truth":"<truth>","alternatives":["a) <a>","b) <b>","c) <c>","d) <d>"]}}
