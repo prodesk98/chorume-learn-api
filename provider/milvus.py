@@ -138,59 +138,31 @@ class MilvusDataStore:
         )
         return collection
 
-    def score(self, embedding: List[List[float]]) -> List[float]:
-        search_result = self.collection.search(
-            **dict(
-                data=embedding,
-                anns_field="embedding",
-                param={
-                    "metric_type": "COSINE",
-                    'index_type': "IVF_FLAT",
-                    "params": {
-                        "nprobe": 12
-                    }
-                },
-                limit=1,
-                output_fields=[],
-            )
-        )
-        results: List[float] = []
-        result: Hits
-
-        for result in search_result:
-            results.extend(result.distances)
-        return [q*0 for q in range(len(embedding))] if len(results) == 0 else results
-
     def upsert(self, document: UpsertTasksDocument) -> bool:
         documents = self.split_text(content=document.content)
+        if len(documents) == 0:
+            raise ValueError("Unable to load documents")
+
         embeddings = self.embeddings_documents(documents=documents)
+        if len(embeddings) == 0:
+            raise ValueError("Unable to load embeds")
 
-        valid_documents: List[str] = []
-        valid_embeddings: List[List[float]] = []
-        # removes duplicate documents using the similarity score
-        for k, score in enumerate(self.score(embeddings)):
-            if score <= 0.99:
-                valid_documents.append(documents[k])
-                valid_embeddings.append(embeddings[k])
-
-        ids = [md5(valid_doc.encode()).hexdigest() for valid_doc in valid_documents]
-
-        if len(ids) == 0:
-            return False
+        ids = [md5(doc.encode()).hexdigest() for doc in documents]
 
         self.vectors = [
             Vector().create(
                 id=ids[i],
                 content=doc,
                 created_by=document.username,
-            ) for i, doc in enumerate(valid_documents)
+                namespace=document.namespace
+            ) for i, doc in enumerate(documents)
         ]
 
         upsert_result = self.collection.upsert(
             data=[
                 ids,
-                valid_documents,
-                valid_embeddings,
+                documents,
+                embeddings,
             ]
         )
 

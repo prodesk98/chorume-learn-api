@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class UpsertTasksDocument(BaseModel):
     content: str
     username: Optional[str] = None
+    namespace: Optional[str] = None
 
 class DocumentTasksSearch(BaseModel):
     id: str

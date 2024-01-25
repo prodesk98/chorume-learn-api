@@ -13,12 +13,13 @@ class Vector(BaseModel):
     created_at: Optional[datetime] = None
 
     @classmethod
-    def create(cls, id: str, content: str, created_by: str):
+    def create(cls, id: str, content: str, created_by: str, namespace: str):
         return cls(
             uuid=str(uuid4()),
             id=id,
             content=content,
             created_by=created_by,
+            namespace=namespace,
             created_at=datetime.now(),
         )
 

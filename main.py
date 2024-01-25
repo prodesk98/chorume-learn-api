@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 from fastapi.staticfiles import StaticFiles
 from config import env
 
@@ -14,9 +15,11 @@ app.mount("/files", app=StaticFiles(directory="/tmp"),  name="tmp")
 app.include_router(api)
 
 @app.get("/")
-async def root():
-    return {
-        "version": env.LEARN_VERSION,
-        "debug": env.DEBUG,
-        "sum": "UHJvdG9uCg=="
-    }
+async def root() -> ORJSONResponse:
+    return ORJSONResponse(
+        {
+            "version": env.LEARN_VERSION,
+            "debug": env.DEBUG
+        }
+    )
+

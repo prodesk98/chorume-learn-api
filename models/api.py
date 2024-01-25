@@ -8,6 +8,7 @@ class UpsertResponse(BaseModel):
 class UpsertRequest(BaseModel):
     content: Optional[str] = Field(..., max_length=4000)
     username: Optional[str] = None
+    namespace: Optional[str] = None
 
 class QueryResponse(BaseModel):
     success: Optional[bool] = True
