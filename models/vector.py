@@ -10,6 +10,7 @@ class Vector(BaseModel):
     id: Optional[str] = None
     content: Optional[str] = None
     created_by: Optional[str] = None
+    namespace: Optional[str] = "default"
     created_at: Optional[datetime] = None
 
     @classmethod

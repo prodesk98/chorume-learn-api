@@ -16,7 +16,7 @@ class Settings(BaseModel):
     AMQP_DSN: Optional[AmqpDsn] = getenv("AMQP_DSN", "pyamqp://guest:guest@rabbitmq:5672//")
     MONGO_DSN: Optional[MongoDsn] = getenv("MONGO_DSN", "mongodb://root:default@mongo:27017")
     MONGO_DB_NAME: Optional[str] = getenv("MONGO_DB_NAME", "learn")
-    MILVUS_HOST: Optional[str] = getenv("MILVUS_HOST", "standalone")
+    MILVUS_HOST: Optional[str] = getenv("MILVUS_HOST", "milvus")
     MILVUS_PORT: Optional[int] = getenv("MILVUS_PORT", 19530)
     MILVUS_DB_NAME: Optional[str] = getenv("MILVUS_DB_NAME", "knowledge")
     MILVUS_COLLECTION_NAME: Optional[str] = getenv("MILVUS_COLLECTION_NAME", "brain")

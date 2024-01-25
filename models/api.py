@@ -7,8 +7,8 @@ class UpsertResponse(BaseModel):
 
 class UpsertRequest(BaseModel):
     content: Optional[str] = Field(..., max_length=4000)
-    username: Optional[str] = None
-    namespace: Optional[str] = None
+    username: Optional[str] = Field(None, max_length=56)
+    namespace: Optional[str] = Field("default", max_length=32)
 
 class QueryResponse(BaseModel):
     success: Optional[bool] = True
@@ -19,7 +19,7 @@ class AnswerResponse(BaseModel):
     response: Optional[str] = None
 
 class TextToVoiceRequest(BaseModel):
-    content: Optional[str] = None
+    content: Optional[str] = Field(..., max_length=256)
 
 class TextToVoiceResponse(BaseModel):
     success: Optional[bool] = True
@@ -27,8 +27,9 @@ class TextToVoiceResponse(BaseModel):
     url: Optional[str] = None
 
 class AnswerRequest(BaseModel):
-    q: Optional[str] = None
-    username: Optional[str] = None
+    q: Optional[str] = Field(..., max_length=32)
+    username: Optional[str] = Field("Anonymous", max_length=32)
+    namespace: Optional[str] = Field("default", max_length=32)
 
 class GenQuizRequest(BaseModel):
     theme: Optional[str] = Field(..., max_length=100)
@@ -36,7 +37,7 @@ class GenQuizRequest(BaseModel):
 
 class GenQuizResponse(BaseModel):
     success: Optional[bool] = True
-    question: Optional[str] = ""
+    question: Optional[str] = None
     alternatives: Optional[List[str]] = []
     truth: Optional[int] = -1
     voice_url: Optional[AnyUrl] = None

@@ -45,11 +45,11 @@ def upsert(request: UpsertRequest = Body(...)):
     summary="Retrieve a list of contexts",
     description="Retrieve a list of content from the vector database."
 )
-async def semantic_search(q = Query(..., title="query", max_length=50)):
+async def semantic_search(q = Query(..., title="query", max_length=50), ns = Query("default", title="namespace", max_length=32)):
     try:
         stime = time()
         milvus = MilvusSearch()
-        responses = await milvus.asearch(query=q)
+        responses = await milvus.asearch(query=q, ns=ns)
 
         if env.DEBUG:
             logger.debug(f"Semantic search was executed successfully; time: {time() - stime}")
@@ -58,7 +58,8 @@ async def semantic_search(q = Query(..., title="query", max_length=50)):
             responses=[
                 {
                     "id": resp.id,
-                    "text": resp.text
+                    "text": resp.text,
+                    "namespace": resp.namespace
                 } for resp in responses
             ]
         )
@@ -76,7 +77,7 @@ async def asking(request: AnswerRequest):
     try:
         stime = time()
         gen = GenBot(request.username)
-        response = await gen.generate(request.q)
+        response = await gen.generate(request.q, request.namespace)
 
         if env.DEBUG:
             logger.debug(f"question answered successfully; time: {time() - stime}")

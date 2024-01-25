@@ -22,10 +22,10 @@ class GenBot:
         self.username: str = username
 
     @staticmethod
-    async def context(q: str) -> str:
+    async def context(q: str, namespace: str = "default") -> str:
         milvus = MilvusSearch()
         return "\n".join(["C%i: <%s>" % (i + 1, r.text.replace("\n", ""))
-                          for i, r in enumerate(await milvus.asearch(query=q, k=2))])
+                          for i, r in enumerate(await milvus.asearch(query=q, k=2, ns=namespace))])
 
     @staticmethod
     def llmChatOpenAI(temperature: float = 0.0) -> ChatOpenAI:
@@ -60,7 +60,7 @@ class GenBot:
     def salutation(self) -> str:
         return f"Greet the user with {self.time}, informal words in the context of the answer, list below:\n{self.informal_greeting}"
 
-    async def generate(self, q: str) -> str:
+    async def generate(self, q: str, namespace: str = "default") -> str:
         messages = [
             SystemMessage(
                 content=f"""{bot.bot_personality}
@@ -72,7 +72,7 @@ Use swear words in the context of the answer, listed below:
 
 Use context to create an answer to the question.
 The paragraphs in the context are separated by C<index>: <<context>>; format: C1: <context1>, C2: <context2>...
-Context: \"\"\"{await self.context(q)}\"\"\"
+Context: \"\"\"{await self.context(q, namespace)}\"\"\"
 
 context language: {bot.bot_lang_context}.
 language: {bot.bot_lang_language}.

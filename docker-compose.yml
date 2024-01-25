@@ -15,7 +15,7 @@ services:
       AMQP_DSN: "pyamqp://guest:guest@rabbitmq:5672//"
       MONGO_DSN: "mongodb://root:default@mongo:27017"
       MONGO_DB_NAME: "learn"
-      MILVUS_HOST: "standalone"
+      MILVUS_HOST: "milvus"
       MILVUS_PORT: 19530
       MILVUS_DB_NAME: knowledge
       MILVUS_COLLECTION_NAME: brain
@@ -46,7 +46,7 @@ services:
       AMQP_DSN: "pyamqp://guest:guest@rabbitmq:5672//"
       MONGO_DSN: "mongodb://root:default@mongo:27017"
       MONGO_DB_NAME: "learn"
-      MILVUS_HOST: "standalone"
+      MILVUS_HOST: "milvus"
       MILVUS_PORT: 19530
       MILVUS_DB_NAME: knowledge
       MILVUS_COLLECTION_NAME: brain
@@ -70,9 +70,7 @@ services:
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    ports:
-      - "27017:27017"
+      MONGO_INITDB_ROOT_PASSWORD: default
     volumes:
       - mongodb_data:/data/db
 
@@ -110,7 +108,7 @@ services:
       timeout: 20s
       retries: 3
 
-  standalone:
+  milvus:
     container_name: milvus-standalone
     restart: always
     image: milvusdb/milvus:v2.3.4

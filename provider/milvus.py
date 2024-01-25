@@ -53,7 +53,7 @@ class MilvusSearch:
         except Exception as e:
             logger.error(e)
 
-    async def asearch(self, query: str, k: int = 3) -> List[DocumentTasksSearch]:
+    async def asearch(self, query: str, k: int = 3, ns: str = "default") -> List[DocumentTasksSearch]:
         try:
             embedding = await self.aembedding(query)
             search_result = await asyncio.to_thread(
@@ -68,8 +68,9 @@ class MilvusSearch:
                             "nprobe": 12
                         }
                     },
+                    expr=f"ns == \"{ns}\"",
                     limit=k,
-                    output_fields=['id', 'text'],
+                    output_fields=['id', 'text', 'ns'],
                 )
             )
             result: Hits
@@ -78,6 +79,7 @@ class MilvusSearch:
                     DocumentTasksSearch(
                         id=hit.entity.get('id'),
                         text=hit.entity.get('text'),
+                        namespace=hit.entity.get('ns')
                     ) for hit in result
                 ]
         except Exception as err:
@@ -148,6 +150,7 @@ class MilvusDataStore:
             raise ValueError("Unable to load embeds")
 
         ids = [md5(doc.encode()).hexdigest() for doc in documents]
+        ns = [document.namespace for _ in ids]
 
         self.vectors = [
             Vector().create(
@@ -162,6 +165,7 @@ class MilvusDataStore:
             data=[
                 ids,
                 documents,
+                ns,
                 embeddings,
             ]
         )
