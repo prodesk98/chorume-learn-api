@@ -29,11 +29,11 @@ class AnswerRequest(BaseModel):
     q: Optional[str] = None
     username: Optional[str] = None
 
-class MillionShowRequest(BaseModel):
+class GenQuizRequest(BaseModel):
     theme: Optional[str] = Field(..., max_length=100)
     amount: Optional[int] = 100
 
-class MillionShowResponse(BaseModel):
+class GenQuizResponse(BaseModel):
     success: Optional[bool] = True
     question: Optional[str] = ""
     alternatives: Optional[List[str]] = []

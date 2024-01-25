@@ -1,4 +1,3 @@
-import asyncio
 import shutil
 import aiofiles
 
@@ -13,7 +12,7 @@ class Voice:
 
     async def text_to_voice(self) -> Audio:
         async with ClientSession() as sess:
-            async with sess.post(f"https://api.elevenlabs.io/v1/text-to-speech/{env.LEARN_VOICE_ID}/stream", json={
+            async with sess.post(f"https://api.elevenlabs.io/v1/text-to-speech/{env.ASKING_VOICE_ID}/stream", json={
                 "model_id": "eleven_multilingual_v2",
                 "text": self.request.content,
                 "voice_settings": {
@@ -39,10 +38,3 @@ class Voice:
                             absolute_path=f"{temp_file.name}.mp3"
                         )
                 return Audio()
-
-
-if __name__ == "__main__":
-    voice = Voice(TextToVoiceRequest(content="Test"))
-    loop = asyncio.get_event_loop()
-    audio: Audio = loop.run_until_complete(voice.text_to_voice())
-    print(f"Audio downloaded: {audio.success}; path: {audio.absolute_path};")

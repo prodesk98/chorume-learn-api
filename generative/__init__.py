@@ -1,2 +1,2 @@
-from .chorume import AIChorume
-from .millionshow import ShowMillion
+from .gen_bot import GenBot
+from .gen_quiz import GenQuiz

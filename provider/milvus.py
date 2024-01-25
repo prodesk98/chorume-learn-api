@@ -56,7 +56,7 @@ class MilvusSearch:
     async def asearch(self, query: str, k: int = 3) -> List[DocumentTasksSearch]:
         try:
             embedding = await self.aembedding(query)
-            searchResult = await asyncio.to_thread(
+            search_result = await asyncio.to_thread(
                 self.search,
                 dict(
                     data=[embedding],
@@ -73,7 +73,7 @@ class MilvusSearch:
                 )
             )
             result: Hits
-            for result in searchResult:
+            for result in search_result:
                 return [
                     DocumentTasksSearch(
                         id=hit.entity.get('id'),
@@ -139,7 +139,7 @@ class MilvusDataStore:
         return collection
 
     def score(self, embedding: List[List[float]]) -> List[float]:
-        searchResult = self.collection.search(
+        search_result = self.collection.search(
             **dict(
                 data=embedding,
                 anns_field="embedding",
@@ -157,7 +157,7 @@ class MilvusDataStore:
         results: List[float] = []
         result: Hits
 
-        for result in searchResult:
+        for result in search_result:
             results.extend(result.distances)
         return [q*0 for q in range(len(embedding))] if len(results) == 0 else results
 
@@ -186,7 +186,7 @@ class MilvusDataStore:
             ) for i, doc in enumerate(valid_documents)
         ]
 
-        UpsertResult = self.collection.upsert(
+        upsert_result = self.collection.upsert(
             data=[
                 ids,
                 valid_documents,
@@ -196,11 +196,7 @@ class MilvusDataStore:
 
         self.vectorFactory.create(request=self.vectors)
 
-        logger.info(f"Upsert count: {UpsertResult.upsert_count}; errors: {UpsertResult.err_count}; "
-                    f"success percentage: {UpsertResult.succ_count / UpsertResult.insert_count * 100}")
+        logger.info(f"Upsert count: {upsert_result.upsert_count}; errors: {upsert_result.err_count}; "
+                    f"success percentage: {upsert_result.succ_count / upsert_result.insert_count * 100}")
 
-        return UpsertResult.succ_count > 0
-
-
-if __name__ == "__main__":
-    mds = MilvusDataStore()
+        return upsert_result.succ_count > 0

@@ -91,25 +91,10 @@ class APITest(unittest.TestCase):
             second=True
         )
 
-    def test_play_voice(self):
+    def test_questionnaire(self):
         self.assertEqual(
             first=request(
-                url="http://localhost:3001/api/voice-playback-queue",
-                m="post",
-                headers=None,
-                payload={
-                    "channel_id": None,
-                    "audio": "https://file-examples.com/storage/fe1dc579bf65a4de0965a48/2017/11/file_example_MP3_700KB.mp3"
-                },
-                params=None
-            ),
-            second=True
-        )
-
-    def test_million_show(self):
-        self.assertEqual(
-            first=request(
-                url="http://localhost:3001/api/million-show",
+                url="http://localhost:3001/api/questionnaire",
                 m="post",
                 headers=None,
                 payload={

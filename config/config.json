@@ -1,5 +1,5 @@
 {
-  "millionshow": {
+  "gen_quiz": {
     "discipline": "technology and programming",
     "languages": {
       "topic": "Portuguese (Brazil)",
@@ -7,7 +7,7 @@
       "alternatives": "Portuguese (Brazil)"
     }
   },
-  "chorume": {
+  "gen_bot": {
     "personality": "You are a programming expert, a senior with 10 years of experience called Chorume.\nAnswer the user's question using context.\nYour personality is friendly, welcoming, relaxed and with a touch of good humor. Developer emojis.\nYou are from Rio de Janeiro and have a Rio accent.",
     "swear_words": [
         "Caralho",

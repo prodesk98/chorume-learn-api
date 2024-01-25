@@ -2,16 +2,15 @@ from typing import List
 from config import env
 from provider import MilvusSearch, Voice
 from security import validate_token
-from tasks import upsert as TaskUpsert
-from generative import AIChorume, ShowMillion
+from tasks import upsert as task_learn_upsert
+from generative import GenBot, GenQuiz
 from models import (
     UpsertResponse, UpsertRequest, QueryResponse,
     AnswerResponse, AnswerRequest, TextToVoiceResponse,
-    TextToVoiceRequest, VoicePlayRequest, VoicePlayResponse,
-    MillionShowResponse, MillionShowRequest, Vector,
+    GenQuizResponse, GenQuizRequest, Vector,
     VectorFilterRequest, AllVectorFactoryRequest, VectorDeleteRequest,
     AllDeleteVectorFactoryRequest, VectorDeleteResponse, VectorUsernamesDeleteRequest,
-    VectorUsernamesDeleteResponse
+    VectorUsernamesDeleteResponse, TextToVoiceRequest
 )
 from loguru import logger
 from fastapi import Depends, HTTPException, Body, Query, APIRouter
@@ -26,11 +25,13 @@ api = APIRouter(
 
 @api.post(
     "/upsert",
-    response_model=UpsertResponse
+    response_model=UpsertResponse,
+    summary="Teach the robot",
+    description="Upload content to the vector database."
 )
 def upsert(request: UpsertRequest = Body(...)):
     try:
-        job = TaskUpsert.delay(request.model_dump())
+        job = task_learn_upsert.delay(request.model_dump())
 
         logger.info(f"[{job.id}] upsert job queued successfully.")
         return UpsertResponse()
@@ -40,9 +41,11 @@ def upsert(request: UpsertRequest = Body(...)):
 
 @api.get(
     "/semantic-search",
-    response_model=QueryResponse
+    response_model=QueryResponse,
+    summary="Retrieve a list of contexts",
+    description="Retrieve a list of content from the vector database."
 )
-async def semantic_search(q = Query("", title="query", max_length=50)):
+async def semantic_search(q = Query(..., title="query", max_length=50)):
     try:
         stime = time()
         milvus = MilvusSearch()
@@ -65,13 +68,15 @@ async def semantic_search(q = Query("", title="query", max_length=50)):
 
 @api.post(
     "/asking",
-    response_model=AnswerResponse
+    response_model=AnswerResponse,
+    summary="Get a response from the robot",
+    description="Retrieve a response from the GPT model, using the context from the vector database."
 )
 async def asking(request: AnswerRequest):
     try:
         stime = time()
-        gen = AIChorume(request.username)
-        response = await gen.aquestion(request.q)
+        gen = GenBot(request.username)
+        response = await gen.generate(request.q)
 
         if env.DEBUG:
             logger.debug(f"question answered successfully; time: {time() - stime}")
@@ -85,7 +90,9 @@ async def asking(request: AnswerRequest):
 
 @api.post(
     "/text-to-speech",
-    response_model=TextToVoiceResponse
+    response_model=TextToVoiceResponse,
+    summary="Text to Speech",
+    description="Transcribe a text to audio."
 )
 async def text_to_speech(request: TextToVoiceRequest):
     if not env.LEARN_VOICE_ENABLED:
@@ -112,38 +119,28 @@ async def text_to_speech(request: TextToVoiceRequest):
         raise HTTPException(status_code=500, detail=f"{str(e)}")
 
 @api.post(
-    "/voice-playback-queue",
-    response_model=VoicePlayResponse
+    "/questionnaire",
+    response_model=GenQuizResponse,
+    summary="Generate a questionnaire",
+    description="Generate a questionnaire with alternatives using the GPT model with context."
 )
-async def voice_play(request: VoicePlayRequest):
-    if request.channel_id is None:
-        return VoicePlayResponse(
-            success=False
-        )
-    return VoicePlayResponse()
-
-@api.post(
-    "/million-show",
-    response_model=MillionShowResponse
-)
-async def million_show(request: MillionShowRequest):
+async def questionnaire(request: GenQuizRequest):
     if request.theme is None:
-        return MillionShowResponse(
+        return GenQuizResponse(
             success=False
         )
     try:
         stime = time()
-        millionShowResponse = await ShowMillion(
-            theme=request.theme, amount=request.amount).generate()
+        quiz = await GenQuiz(theme=request.theme, amount=request.amount).generate()
 
         if env.DEBUG:
             logger.debug(f"Quiz generated successfully; time: {time() - stime}")
 
-        return MillionShowResponse(
-            question=millionShowResponse.question,
-            alternatives=millionShowResponse.alternatives,
-            truth=millionShowResponse.truth,
-            voice_url=millionShowResponse.voice_url
+        return GenQuizResponse(
+            question=quiz.question,
+            alternatives=quiz.alternatives,
+            truth=quiz.truth,
+            voice_url=quiz.voice_url
         )
     except Exception as e:
         logger.error(e)
@@ -151,9 +148,11 @@ async def million_show(request: MillionShowRequest):
 
 @api.post(
     "/vectors",
-    response_model=List[Vector]
+    response_model=List[Vector],
+    summary="Retrieve a list of vectors",
+    description="Retrieve a list of vectors from the NoSQL database"
 )
-async def create_vector(request: VectorFilterRequest):
+async def vectors_fetch(request: VectorFilterRequest):
     try:
         return await VectorFactory().afind_all(
             AllVectorFactoryRequest(
@@ -169,7 +168,9 @@ async def create_vector(request: VectorFilterRequest):
 
 @api.delete(
     "/vectors",
-    response_model=VectorDeleteResponse
+    response_model=VectorDeleteResponse,
+    summary="Delete vectors",
+    description="Delete a set of vectors using IDs."
 )
 async def delete_vectors_by_ids(request: VectorDeleteRequest):
     try:
@@ -184,7 +185,9 @@ async def delete_vectors_by_ids(request: VectorDeleteRequest):
 
 @api.delete(
     "/vectors/usernames",
-    response_model=VectorUsernamesDeleteResponse
+    response_model=VectorUsernamesDeleteResponse,
+    summary="Delete vectors by usernames",
+    description="Delete a set of vectors using by usernames."
 )
 async def delete_vectors_by_username(request: VectorUsernamesDeleteRequest):
     try:

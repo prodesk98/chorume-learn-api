@@ -1,4 +1,3 @@
-import asyncio
 from typing import List, Dict, Union
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from pymongo import MongoClient
@@ -63,16 +62,3 @@ class AsyncMongo:
                             ]
                         }
                     )
-
-
-if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    mongo = AsyncMongo('vector')
-    from time import time
-    stime = time()
-    print(loop.run_until_complete(mongo.all()))
-    print(loop.run_until_complete(mongo.select()))
-    print(loop.run_until_complete(mongo.insert([{"id": '1'}, {"id": '2'}, {"id": '3'}])))
-    print(loop.run_until_complete(mongo.update([{"id": '4'}], {"id": '3'})))
-    print(loop.run_until_complete(mongo.delete(['1', '2'])))
-    print(f"executed in {time() - stime}")

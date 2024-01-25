@@ -32,8 +32,8 @@ Authorization: Bearer {{Authorization}}
   "content": "Alan Turing foi o pai da ciência da computação."
 }
 
-### million show
-POST http://localhost:3001/api/million-show
+### quiz
+POST http://localhost:3001/api/questionnaire
 Content-Type: application/json
 Authorization: Bearer {{Authorization}}
 
