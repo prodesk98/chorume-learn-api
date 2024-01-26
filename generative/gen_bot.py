@@ -100,7 +100,6 @@ Output with a maximum of 3 sentences."""
             HumanMessage(content=q),
         ]
         llm = self.llmChatOpenAI(temperature=.1)
-        print(messages[0].content)
         with get_openai_callback() as cb:
             response = await llm.ainvoke(input=messages)
             logger.info(f"LLM({env.OPENAI_CHAT_MODEL}); Cost US$%.5f; Tokens {cb.total_tokens}" % cb.total_cost)
