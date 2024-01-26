@@ -31,6 +31,8 @@ class AnswerRequest(BaseModel):
     username: Optional[str] = Field("Anonymous", max_length=32)
     namespace: Optional[str] = Field("default", max_length=32)
     personality: Optional[str] = Field(None, max_length=276)
+    swear_words: Optional[List[str]] = Field(None, max_items=10)
+    informal_greeting: Optional[List[str]] = Field(None, max_items=10)
 
 class GenQuizRequest(BaseModel):
     theme: Optional[str] = Field(..., max_length=100)

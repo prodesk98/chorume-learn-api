@@ -22,12 +22,18 @@ class GenQuiz:
     def __init__(self, theme: str, amount: int):
         self.theme = theme
         self.amount = amount
+        self.milvus = MilvusSearch()
 
-    @staticmethod
-    async def context(q: str, namespace: str = "default") -> str:
-        milvus = MilvusSearch()
-        return "\n".join(["C%i: <%s>" % (i+1, r.text.replace("\n", ""))
-                          for i, r in enumerate(await milvus.asearch(query=q, k=2, ns=namespace))])
+
+    async def context(self, q: str, namespace: str = "default", k: int = 2) -> str:
+        fetch = await self.milvus.asearch(query=q, k=k, ns=namespace)
+        if len(fetch) == 0:
+            return ""
+        return ("The paragraphs in the context are separated by C<index>: <<context>>; "
+                "format: C1: <context1>, C2: <context2>...\n\n%s") % "\n".join(
+            ["C%i: <%s>" % (i + 1, r.text.replace("\n", ""))
+             for i, r in enumerate(fetch)]
+        )
 
     @staticmethod
     def llmChatOpenAI(temperature: float = 0.0) -> ChatOpenAI:
@@ -161,8 +167,7 @@ The questionnaire with just (1)one sentence, and the alternatives with only (5)f
 Topic: \"\"\"{self.theme}\"\"\"
 
 Only use the context that is related to the topic.
-The paragraphs in the context are separated by C<index>: <<context>>; format: C1: <context1>, C2: <context2>...
-Context: \"\"\"{await self.context(self.theme, namespace)}\"\"\"
+Context: \"\"\"{await self.context(self.theme, namespace, 3)}\"\"\"
 
 JSON format:
 {{"question":"<question>","truth":"<truth>","alternatives":["a) <a>","b) <b>","c) <c>","d) <d>"]}}

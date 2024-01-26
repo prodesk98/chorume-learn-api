@@ -19,8 +19,18 @@ Content-Type: application/json
 Authorization: Bearer {{Authorization}}
 
 {
-  "q": "Quem criou o C++?",
-  "username": "Proton"
+  "q": "você é de qual planeta?",
+  "username": "proton",
+  "personality": "You are a virtual mascot named Anny. You are a galactic bunny, who came to earth to pass on interstellar knowledge.",
+  "swear_words": null,
+  "informal_greeting": [
+    "Amo cenouras galáticas",
+    "cenourinhas deliça...",
+    "meu terráqueo preferido",
+    "oi terráqueo",
+    "entendeu terráqueo?"
+  ],
+  "namespace": "default"
 }
 
 ### text to speech
