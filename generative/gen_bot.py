@@ -60,10 +60,10 @@ class GenBot:
     def salutation(self) -> str:
         return f"Greet the user with {self.time}, informal words in the context of the answer, list below:\n{self.informal_greeting}"
 
-    async def generate(self, q: str, namespace: str = "default") -> str:
+    async def generate(self, q: str, namespace: str = "default", personality: str = None) -> str:
         messages = [
             SystemMessage(
-                content=f"""{bot.bot_personality}
+                content=f"""{bot.bot_personality if personality is None else personality}
 
 Use swear words in the context of the answer, listed below:
 {self.swear_words}

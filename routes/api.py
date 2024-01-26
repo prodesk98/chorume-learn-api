@@ -77,7 +77,7 @@ async def asking(request: AnswerRequest):
     try:
         stime = time()
         gen = GenBot(request.username)
-        response = await gen.generate(request.q, request.namespace)
+        response = await gen.generate(request.q, request.namespace, request.personality)
 
         if env.DEBUG:
             logger.debug(f"question answered successfully; time: {time() - stime}")

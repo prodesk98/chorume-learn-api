@@ -30,6 +30,7 @@ class AnswerRequest(BaseModel):
     q: Optional[str] = Field(..., max_length=32)
     username: Optional[str] = Field("Anonymous", max_length=32)
     namespace: Optional[str] = Field("default", max_length=32)
+    personality: Optional[str] = Field(None, max_length=276)
 
 class GenQuizRequest(BaseModel):
     theme: Optional[str] = Field(..., max_length=100)
