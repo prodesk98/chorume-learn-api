@@ -160,6 +160,7 @@ The questionnaire with just (1)one sentence, and the alternatives with only (5)f
 
 Topic: \"\"\"{self.theme}\"\"\"
 
+Only use the context that is related to the topic.
 The paragraphs in the context are separated by C<index>: <<context>>; format: C1: <context1>, C2: <context2>...
 Context: \"\"\"{await self.context(self.theme, namespace)}\"\"\"
 

@@ -71,6 +71,7 @@ Use swear words in the context of the answer, listed below:
 {self.salutation}
 
 Use context to create an answer to the question.
+Only use the context that is related to the user's question.
 The paragraphs in the context are separated by C<index>: <<context>>; format: C1: <context1>, C2: <context2>...
 Context: \"\"\"{await self.context(q, namespace)}\"\"\"
 
