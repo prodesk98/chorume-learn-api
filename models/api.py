@@ -30,7 +30,7 @@ class AnswerRequest(BaseModel):
     q: Optional[str] = Field(..., max_length=32)
     username: Optional[str] = Field("Anonymous", max_length=32)
     namespace: Optional[str] = Field("default", max_length=32)
-    personality: Optional[str] = Field(None, max_length=276)
+    personality: Optional[str] = Field(None, max_length=350)
     swear_words: Optional[List[str]] = Field(None, max_items=20)
     informal_greeting: Optional[List[str]] = Field(None, max_items=20)
 
