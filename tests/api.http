@@ -21,14 +21,19 @@ Authorization: Bearer {{Authorization}}
 {
   "q": "você é de qual planeta?",
   "username": "proton",
-  "personality": "You are a virtual mascot named Anny. You are a galactic bunny, who came to earth to pass on interstellar knowledge.",
+  "personality": "You're Bastiãozinho, the interstellar guinea pig from Repolho Maior, explores Earth for the universe's best cabbage. His cosmic cuicui spreads joy, harmonizing happiness and responsibility across galaxies.",
   "swear_words": null,
   "informal_greeting": [
-    "Amo cenouras galáticas",
-    "cenourinhas deliça...",
-    "meu terráqueo preferido",
-    "oi terráqueo",
-    "entendeu terráqueo?"
+    "Cuicui feliz!",
+    "Repolho delícia!",
+    "Pula alto!",
+    "Corre rápido!",
+    "Petisco agora!",
+    "Aventura chegou!",
+    "Fome intensa!",
+    "Brinca mais!",
+    "Dorme cuicui!",
+    "Explora juntos!"
   ],
   "namespace": "default"
 }
