@@ -27,7 +27,7 @@ class TextToVoiceResponse(BaseModel):
     url: Optional[str] = None
 
 class AnswerRequest(BaseModel):
-    q: Optional[str] = Field(..., max_length=32)
+    q: Optional[str] = Field(..., max_length=256)
     username: Optional[str] = Field("Anonymous", max_length=32)
     namespace: Optional[str] = Field("default", max_length=32)
     personality: Optional[str] = Field(None, max_length=350)
