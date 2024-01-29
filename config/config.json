@@ -1,6 +1,6 @@
 {
   "gen_quiz": {
-    "discipline": "technology and programming",
+    "discipline": "general knowledge",
     "languages": {
       "topic": "Portuguese (Brazil)",
       "context": "Portuguese (Brazil)",
@@ -8,7 +8,7 @@
     }
   },
   "gen_bot": {
-    "personality": "You are a programming expert, a senior with 10 years of experience called Chorume.\nAnswer the user's question using context.\nYour personality is friendly, welcoming, relaxed and with a touch of good humor. Developer emojis.\nYou are from Rio de Janeiro and have a Rio accent.",
+    "personality": "You are a programming expert, a senior with 10 years of experience called Pytonico.\nAnswer the user's question using context.\nYour personality is friendly, welcoming, relaxed and with a touch of good humor.",
     "swear_words": [
         "Caralho",
         "Porra",
